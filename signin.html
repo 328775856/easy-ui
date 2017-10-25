@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="themes/material/easyui.css">	
+	<link rel="stylesheet" href="themes/icon.css">
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="js/easyui-lang-zh_CN.js"></script>
+</head>
+<body>
+  <div class="dd" style="text-align: center;">
+  	<form  style="margin-top: 60px;" id="fm" method="post">
+	  <p>用户名：<input type="text" id="username" name="username"></p>
+	  <p>密&nbsp;&nbsp;&nbsp;码：<input type="password" id="userpwd" name="userpwd"></p>
+    <p style="margin-left: -12px;">重复密码：<input type="password" id="reuserpwd" name="reuserpwd"></p>
+    <p>邮&nbsp;&nbsp;&nbsp;箱：<input type="text" id="userEmail" name="userEmail"></p>
+	  <button type="button" id="btns">注册</button>
+    <a href="javascript:history.go(-1)" class="easyui-linkbutton">取消</a>
+	</form>  
+  </div>
+<script type="text/javascript">
+  $(".dd").dialog({
+  	title:"用户注册",
+  	width:400,
+  	height:200,
+  	closed:false,
+  	closable:false,
+  	modal:true,
+  	draggable:false,
+  	iconCls:"icon-man",
+  });
+  //$("#username,#userpwd").textbox() 
+  $("#userpwd").textbox({
+  	required:true,
+  	validType: 'length[6,12]',
+  	missingMessage:'请输入密码',
+  	invalidMessage:'密码长度在6-12位之间',
+  })
+  $("#userEmail").textbox({
+    required:true,
+    validType: 'email',
+    missingMessage:'请输入邮箱',
+    invalidMessage:'邮箱格式不正确',
+  })
+  $("#reuserpwd").textbox({
+    required:true,
+    validType: 'length[6,12]',
+    missingMessage:'请输入密码',
+    invalidMessage:'密码长度在6-12位之间',
+  })
+   $("#username").textbox({
+  	required:true,
+  	missingMessage:'请输入用户名',
+  })  
+   $("#btns").linkbutton({
+   	onClick:function(){
+   		$("#fm").form('submit',{
+   			url:'save_user.php',
+   			// onSubmit:function(){
+   			// },
+   			success:function(data){
+          var data = eval('('+data+')');
+   				if(data.success==true){
+   					$.messager.alert("操作提示","注册成功");
+   					location.href="login.html";
+   				}else{
+   					$.messager.alert("操作提示",data.msg);
+   				}
+   			}
+   		})
+   	}
+   })
+</script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>管理首页</title>
+<link type="text/css" rel="stylesheet" href="themes/icon.css"/>
+<link type="text/css" rel="stylesheet" href="themes/material/easyui.css"/>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="js/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(e) {
+     $.get("isLogin.php",function(data){
+		   if(data!=''){
+			    $("#admin").text("你好，"+data+"!");
+                $("exit").click(function(){
+                    location.href="index.html";
+                })
+		   }else{
+			   $.messager.alert("操作提示","您还没有登录，请先登录。","info",function(){
+				   location.href='login.html';
+				   });
+			   return;
+		   }
+		 });
+  });
+  function addTab(title,url){
+   // $('#dlgs,#dlg,#dlgss').dialog('close');
+	  if($('#tt').tabs('exists',title)){
+		    $('#tt').tabs('select',title);
+			return;
+	  }
+	  $('#tt').tabs('add',{    
+			title:title,    
+			href:url,    
+			closable:true,    
+			   
+		});  
+  
+  }
+</script>
+</head>
+
+<body class="easyui-layout">   
+    <div data-options="region:'north'" style="height:100px">
+       <h1>欢迎使用管理系统</h1>
+       <div id="admin"></div>
+       <a id="exit" href="logout.php">退出</a>
+    </div>
+    <div data-options="region:'south'" style="height:50px;">
+        <p style="text-align:center;">&copy;2000-2017版权所有</p>
+    </div>
+    <div data-options="region:'west'" style="width:180px;">
+        <div id="aa" class="easyui-accordion" data-options="fit:true" style="width:178px;">   
+            <div title="用户管理" data-options="iconCls:'icon-save',selected:true" style="overflow:auto;padding:10px;">   
+                  
+              <!-- <p><a href="javascript:;" onclick="addTab('添加用户','addUser.html')">添加用户</a></p>  -->
+                <p><a class="easyui-linkbutton" href="javascript:;" onclick="addTab('管理用户','manageUser.html')">管理用户</a></p> 
+                  
+            </div>   
+            <div title="商品管理" data-options="iconCls:'icon-reload'" style="padding:10px;">   
+              <!--   <p><a href="" class="easyui-linkbutton">添加商品类型</a></p> 
+                <p><a href="" class="easyui-linkbutton">管理商品类型</a></p> 
+                <p><a href="" class="easyui-linkbutton">添加商品</a></p>  -->
+                <p><a class="easyui-linkbutton" href="javascript:;" onclick="addTab('商品信息','manageGoods.html')">管理商品</a></p>
+            </div>   
+            <div title="订单管理" data-options="iconCls:'icon-reload'" style="padding:10px;">   
+                <!-- <p><a href="" class="easyui-linkbutton">管理客户</a></p>  -->
+                <p><a class="easyui-linkbutton" href="javascript:;" onclick="addTab('订单信息','manageOrder.html')">管理订单</a></p> 
+            </div>   
+		</div> 
+    </div>      
+    <div data-options="region:'center'">   
+        <div id="tt" class="easyui-tabs" data-options="fit:true,border:false">   
+            <div title="起始页" style="padding:20px;display:none;">   
+                系统简介  
+            </div>   
+        </div>  
+    </div>   
+</body>  
+</html>

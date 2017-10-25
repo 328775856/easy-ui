@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<table id="dg" title="用户列表" class="easyui-datagrid" style="width:100%;height:300px"
+        url="get_users.php"
+        toolbar="#toolbar" pagination="true"
+        rownumbers="true" fitColumns="true" singleSelect="true">
+    <thead>
+        <tr>
+            <th field="userid" width="50">用户编号</th>
+            <th field="username" width="50">用户名称</th>
+            <th field="userpwd" width="50">用户密码</th>
+            <th field="userEmail" width="50">用户邮箱</th>
+        </tr>
+    </thead>
+</table>
+<div id="toolbar">
+    <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newUser()">添加</a>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editUser()">修改</a>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="removeUser()">删除</a>
+</div>
+
+<div id="dlg" class="easyui-dialog" style="width:400px;height:280px;padding:10px 20px"
+        closed="true" buttons="#dlg-buttons">
+    <div class="ftitle">用户信息</div>
+    <form id="fm" method="post" novalidate>
+        <div class="fitem">
+            <label>用户名称:</label>
+            <input name="username" class="easyui-validatebox" required>
+        </div>
+        <div class="fitem">
+            <label>用户密码:</label>
+            <input name="userpwd" type="password" class="easyui-validatebox" required>
+        </div>
+        <div class="fitem">
+            <label>重复密码:</label>
+            <input name="reuserpwd" type="password" class="easyui-validatebox" required>
+        </div>
+        <div class="fitem">
+            <label>用户邮箱:</label>
+            <input name="userEmail" class="easyui-validatebox" validType="email">
+        </div>
+    </form>
+</div>
+<div id="dlg-buttons">
+    <a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="saveUser()">保存</a>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">取消</a>
+</div>
+<script type="text/javascript">
+		var url;
+		function newUser(){
+			$('#dlg').dialog('open').dialog('setTitle','添加用户');
+			$('#fm').form('clear');
+			url = 'save_user.php';
+		}
+		function editUser(){
+			var row = $('#dg').datagrid('getSelected');
+			if (row){
+				$('#dlg').dialog('open').dialog('setTitle','修改用户');
+				row.reuserpwd=row.userpwd;
+				$('#fm').form('load',row);
+				url = 'update_user.php?id='+row.userid;
+			}else{
+			   $.messager.alert("操作提示","请选择要修改的用户。");	
+			}
+		}
+		function saveUser(){
+			$('#fm').form('submit',{
+				url: url,
+				onSubmit: function(){
+					return $(this).form('validate');
+				},
+				success: function(result){
+					var result = eval('('+result+')');
+					if (result.success){
+						$('#dlg').dialog('close');	// 关闭对话框
+						$('#dg').datagrid('reload');// 重写加载数据
+					} else {
+						$.messager.show({
+							title: '错误',
+							msg: result.msg
+						});
+					}
+				}
+			});
+		}
+		function removeUser(){
+			var row = $('#dg').datagrid('getSelected');
+			//alert(row.userid)
+			if (row){
+				$.messager.confirm('确认','您确定要删除选中的用户吗?',function(r){
+					if (r){
+
+						$.post('remove_user.php',{id:row.userid},function(result){
+							if (result.success){
+								$('#dg').datagrid('reload');//重新加载数据
+							} else {
+								$.messager.show({	//显示错误消息
+									title: '错误',
+									msg: result.msg
+								});
+							}
+						},'json');
+					}
+				});
+			}
+		}
+	</script>
+<style type="text/css">
+		#fm{
+			margin:0;
+			padding:10px 30px;
+		}
+		.ftitle{
+			font-size:14px;
+			font-weight:bold;
+			color:#666;
+			padding:5px 0;
+			margin-bottom:10px;
+			border-bottom:1px solid #ccc;
+		}
+		.fitem{
+			margin-bottom:5px;
+		}
+		.fitem label{
+			display:inline-block;
+			width:80px;
+		}
+	</style>

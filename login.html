@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="themes/material/easyui.css">	
+	<link rel="stylesheet" href="themes/icon.css">
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="js/easyui-lang-zh_CN.js"></script>
+</head>
+<body>
+  <div class="dd" style="text-align: center;">
+  	<form  style="margin-top: 60px;" id="fm" method="post">
+	  <p>用户名：<input type="text" id="username" name="username"></p>
+	  <p>密&nbsp;&nbsp;&nbsp;码：<input type="password" id="userpwd" name="userpwd"></p>
+	  <button type="button" id="btn">登陆</button>
+    <a class="easyui-linkbutton" id="btns" href="signin.html">注册</a>
+	</form>  
+  </div>
+<script type="text/javascript">
+  $(".dd").dialog({
+  	title:"用户登录",
+  	width:400,
+  	height:200,
+  	closed:false,
+  	closable:false,
+  	modal:true,
+  	draggable:false,
+  	iconCls:"icon-man",
+  });
+  //$("#username,#userpwd").textbox() 
+  $("#userpwd").textbox({
+  	required:true,
+  	validType: 'length[6,12]',
+  	missingMessage:'请输入密码',
+  	invalidMessage:'密码长度在6-12位之间',
+  })
+   $("#username").textbox({
+  	required:true,
+  	missingMessage:'请输入用户名',
+  })  
+   $("#btn").linkbutton({
+   	onClick:function(){
+   		$("#fm").form('submit',{
+   			url:'doLogin.php',
+   			// onSubmit:function(){
+   			// },
+   			success:function(data){
+   				if(data){
+   					$.messager.alert("操作提示","登录成功");
+   					location.href="index.html";
+   				}else{
+   					$.messager.alert("操作提示","登陆失败，请重新登陆！");
+   				}
+   			}
+   		})
+   	}
+   })
+</script>
+</body>
+</html>

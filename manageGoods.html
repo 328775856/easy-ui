@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<table id="dgs" title="商品列表" class="easyui-datagrid" style="width:100%;height:300px"
+        url="get_goods.php"
+        toolbar="#toolbars" pagination="true"
+        rownumbers="true" fitColumns="true" singleSelect="true">
+    <thead>
+        <tr>
+        	<th field="id" width="50">用户编号</th>
+            <th field="goodsname" width="50">商品名称</th>
+            <th field="goodsmsg" width="50">商品简介</th>
+        </tr>
+    </thead>
+</table>
+<div id="toolbars">
+    <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newGoods()">添加</a>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editGoods()">修改</a>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="removeGoods()">删除</a>
+</div>
+
+<div id="dlgs" class="easyui-dialog" style="width:400px;height:280px;padding:10px 20px"
+        closed="true" buttons="#dlgs-buttons">
+    <div class="ftitle">商品信息</div>
+    <form id="fms" method="post" novalidate>
+        <div class="fitem">
+            <label>商品名称:</label>
+            <input name="goodsname"  required>
+        </div>
+        <div class="fitem">
+            <label>商品简介:</label>
+            <input name="goodsmsg" type="text" required>
+        </div>
+    </form>
+</div>
+<div id="dlgs-buttons">
+    <a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="saveGoods()">保存</a>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlgs').dialog('close')">取消</a>
+</div>
+<script type="text/javascript">
+		var url;
+		function newGoods(){
+			$('#dlgs').dialog('open').dialog('setTitle','添加商品');
+			$('#fms').form('clear');
+			url = 'save_goods.php';
+		}
+		function editGoods(){
+			var row = $('#dgs').datagrid('getSelected');
+			if (row){
+				$('#dlgs').dialog('open').dialog('setTitle','修改商品');
+				$('#fms').form('load',row);
+				url = 'update_goods.php?id='+row.id;
+			}else{
+			   $.messager.alert("操作提示","请选择要修改的商品。");	
+			}
+		}
+		function saveGoods(){
+			$('#fms').form('submit',{
+				url: url,
+				onSubmit: function(){
+					//return $(this).form('validate');
+				},
+				success: function(result){
+					var result = eval('('+result+')');
+					if (result.success){
+						$('#dlgs').dialog('close');	// 关闭对话框
+						$('#dgs').datagrid('reload');// 重写加载数据
+					} else {
+						$.messager.show({
+							title: '错误',
+							msg: result.msg
+						});
+					}
+				}
+			});
+		}
+		function removeGoods(){
+			var row = $('#dgs').datagrid('getSelected');
+			//alert(row.userid)
+			if (row){
+				$.messager.confirm('确认','您确定要删除选中的商品吗?',function(r){
+					if (r){
+
+						$.post('remove_goods.php',{id:row.id},function(result){
+							if (result.success){
+								$('#dgs').datagrid('reload');//重新加载数据
+							} else {
+								$.messager.show({	//显示错误消息
+									title: '错误',
+									msg: result.msg
+								});
+							}
+						},'json');
+					}
+				});
+			}
+		}
+	</script>
+<style type="text/css">
+		#fms{
+			margin:0;
+			padding:10px 30px;
+		}
+		.ftitle{
+			font-size:14px;
+			font-weight:bold;
+			color:#666;
+			padding:5px 0;
+			margin-bottom:10px;
+			border-bottom:1px solid #ccc;
+		}
+		.fitem{
+			margin-bottom:5px;
+		}
+		.fitem label{
+			display:inline-block;
+			width:80px;
+		}
+	</style>
