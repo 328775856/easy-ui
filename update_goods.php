@@ -1,10 +1,10 @@
 <?php
 
-$orderid = intval($_REQUEST['orderid']);
+$goodsid = intval($_REQUEST['goodsid']);
 $goodsname = $_REQUEST['goodsname'];
 $goodsmsg = $_REQUEST['goodsmsg'];
 	include 'sql.php';
-	$sql = "update goodsinfo set goodsname='$goodsname',goodsmsg='$goodsmsg' where orderid=$orderid";
+	$sql = "update goodsinfo set goodsname='$goodsname',goodsmsg='$goodsmsg' where goodsid=$goodsid";
 	$result = $conn->query($sql);
 	if ($result){
 		echo json_encode(array('success'=>true));
